@@ -29,11 +29,9 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: Display folder
-        run: |
-          cd app/
       - name: Install dependencies
         run: |
+          cd ./app/
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
           python manage.py makemigrations user
@@ -45,6 +43,7 @@ jobs:
         env:
           DATABASE_URL: 'postgres://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres'
         run: |
+          cd ./app/
           python manage.py makemigrations user
           python manage.py migrate
           python manage.py makemigrations posts
