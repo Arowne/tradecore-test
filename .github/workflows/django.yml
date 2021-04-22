@@ -2,9 +2,6 @@ name: CI
 
 on: [push]
 
-defaults:
-    run:
-      working-directory: ./app
 jobs:
 
   test:
