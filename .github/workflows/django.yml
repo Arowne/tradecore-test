@@ -18,6 +18,10 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
       - name: Set up Python 3.7
         uses: actions/setup-python@v1
         with:
@@ -46,6 +50,8 @@ jobs:
           cd ./app/
           python manage.py makemigrations user
           python manage.py migrate
-          python manage.py makemigrations posts
+          python manage.py makemigrations ingredients
+          python manage.py migrate
+          python manage.py makemigrations recipe
           python manage.py migrate
           python manage.py test
