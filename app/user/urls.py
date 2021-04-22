@@ -15,8 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import UserCreateRetriveUpdateDestroy
+from .views import UserCreateRetriveUpdateDestroy, UserList
 
 urlpatterns = [
     path('', UserCreateRetriveUpdateDestroy.as_view(), name="accounts"),
+    path('all', UserList.as_view(), name="user-list"),
 ]

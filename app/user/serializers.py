@@ -9,6 +9,7 @@ from django.core.validators import RegexValidator, FileExtensionValidator
 from django.core.exceptions import ValidationError
 
 from .utils import ip_localisation
+from .models import Login
 from user.models import User
 
 
@@ -200,3 +201,21 @@ class DeleteUserSerializer(serializers.Serializer):
             print('')
 
         return value
+
+class ListLoginSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Login
+        fields = ['location', 'is_holiday']
+
+
+class ListUserSerializer(serializers.ModelSerializer):
+    
+    login_list = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name", "email", "login_list"]
+    
+    def get_login_list(self, obj):
+        return ListLoginSerializer(obj.login_set.all(), many=True).data

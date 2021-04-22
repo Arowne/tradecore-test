@@ -52,3 +52,11 @@ class RetrievePostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ["public_id", "title", "image_url", "content", "user"]
+
+class RetrieveAllPostSerializer(serializers.ModelSerializer):
+    
+    user = ListUserSerializer(many=False)
+    
+    class Meta:
+        model = Post
+        fields = ["public_id", "title", "image_url", "content", "user"]

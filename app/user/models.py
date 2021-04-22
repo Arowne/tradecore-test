@@ -22,7 +22,8 @@ class Login(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     public_id = models.UUIDField(default=uuid.uuid4, editable=False)
     location = models.CharField(max_length=30, default=None,blank=True, null=True)
-    is_holliday = models.BooleanField(default=True)
+    is_holiday = models.BooleanField(default=False)
+    is_holliday = models.BooleanField(default=False)
     
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     
@@ -41,7 +42,7 @@ class LoginAdmin(admin.ModelAdmin):
     list_display = (
         "public_id",
         "location",
-        "is_holliday",
+        "is_holiday",
         "user"
     )
 

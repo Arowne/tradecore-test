@@ -12,6 +12,6 @@ def ip_localisation(ip, user):
     get_holidays = holidays.CountryHoliday(response.country) 
     today = datetime.datetime.today()
 
-    is_holliday = today.strftime("%Y-%m-%d") in get_holidays
+    is_holiday = today.strftime("%Y-%m-%d") in get_holidays
     
-    Login.objects.create(user=user, location=response.country, is_holliday=is_holliday)
+    Login.objects.create(user=user, location=response.country, is_holiday=is_holiday)
