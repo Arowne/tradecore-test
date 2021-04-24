@@ -58,7 +58,7 @@ class PostRetriveUpdateDestroy(APIView):
         
         instance = get_object_or_404(Post, public_id=self.kwargs.get('public_id'), is_active=True)
         get_queryset = self.get_queryset(request)
-        serializer = RetrievePostSerializer(get_queryset[0])
+        serializer = RetrievePostSerializer(get_queryset[0], context={'user': request.user})
         return JsonResponse(serializer.data, safe=False, status=200)
                 
     def put(self, request, *args, **kwargs):
@@ -93,7 +93,7 @@ class PostList(APIView):
     
     def get(self, request, *args, **kwargs):
         get_queryset = self.get_queryset(request)
-        serializer = RetrievePostSerializer(get_queryset, many=True)
+        serializer = RetrievePostSerializer(get_queryset, context={'user': request.user}, many=True)
         return JsonResponse(serializer.data, safe=False, status=200)
     
 
@@ -119,7 +119,7 @@ class PostsLike(APIView):
         if serializer.is_valid():
             like = serializer.create(serializer.validated_data)
             like.save()
-            return JsonResponse(serializer.data, safe=False, status=200)
+            return JsonResponse({"response": "Like registered"}, safe=False, status=200)
         
         return JsonResponse(serializer.errors, safe=False, status=404)
         
@@ -146,7 +146,7 @@ class PostsUnlike(APIView):
         if serializer.is_valid():
             unlike = serializer.create(serializer.validated_data)
             unlike.save()
-            return JsonResponse(serializer.data, safe=False, status=200)
+            return JsonResponse({"response": "Unlike registered"}, safe=False, status=200)
         
         return JsonResponse(serializer.errors, safe=False, status=404)
         
