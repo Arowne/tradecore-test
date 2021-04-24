@@ -33,7 +33,7 @@ class Like(models.Model):
     is_active = models.BooleanField(default=True, blank=True, null=True)
     
     post = models.ForeignKey(Post, on_delete=models.SET_NULL, null=True)
-    User = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
 class UnLike(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -43,7 +43,7 @@ class UnLike(models.Model):
     is_active = models.BooleanField(default=True, blank=True, null=True)
     
     post = models.ForeignKey(Post, on_delete=models.SET_NULL, null=True)
-    User = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)    
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)    
 
 class PostAdmin(admin.ModelAdmin):
     list_display = (
