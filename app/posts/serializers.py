@@ -17,18 +17,6 @@ class ListUserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['email']
 
-class ListLikeSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Like
-        fields = ['created_at']
-
-class ListUnlikeSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = UnLike
-        fields = ['created_at']
-
 class CreatePostSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
@@ -66,16 +54,32 @@ class RetrievePostSerializer(serializers.ModelSerializer):
     user = ListUserSerializer(many=False)
     like =  serializers.SerializerMethodField(read_only=True)
     unlike = serializers.SerializerMethodField(read_only=True)
+    user_unlike = serializers.SerializerMethodField(read_only=True)
+    user_like = serializers.SerializerMethodField(read_only=True)
 
     def get_like(self, obj):
-        return ListLikeSerializer(obj.like_set.filter(is_active=True), many=True).data
+        return obj.like_set.filter(is_active=True).count()
 
     def get_unlike(self, obj):
-        return ListUnlikeSerializer(obj.unlike_set.filter(is_active=True), many=True).data
+        return obj.unlike_set.filter(is_active=True).count()
+    
+    def get_user_like(self, obj):
+        
+        if self.context['user'].is_anonymous:
+            return False
+        
+        return len(obj.like_set.filter(user=self.context['user'], is_active=True)) == 1
+
+    def get_user_unlike(self, obj):
+        
+        if self.context['user'].is_anonymous:
+            return False
+        
+        return len(obj.unlike_set.filter(user=self.context['user'], is_active=True)) == 1
 
     class Meta:
         model = Post
-        fields = ["public_id", "title", "image_url", "content", "user", "like", "unlike"]
+        fields = ["public_id", "title", "image_url", "content", "user", "like", "unlike", "user_like", "user_unlike"]
 
     
 class RetrieveAllPostSerializer(serializers.ModelSerializer):
@@ -122,7 +126,7 @@ class PostsUnlikeSerializer(serializers.ModelSerializer):
         
         if like:
             like.is_active = False
-            unlike.save()
+            like.save()
 
         if unlike:
             unlike.is_active = False
