@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 
-from .serializers import CreatePostSerializer, UpdatePostSerializer, RetrievePostSerializer, DeletePostSerializer
+from .serializers import CreatePostSerializer, UpdatePostSerializer, RetrievePostSerializer, DeletePostSerializer, PostsLikeSerializer, PostsUnlikeSerializer
 from user.models import User
 from .models import Post
 
@@ -51,14 +51,16 @@ class PostRetriveUpdateDestroy(APIView):
         return super(PostRetriveUpdateDestroy, self).get_permissions()
 
     def get_queryset(self, request):
+        
         return Post.objects.filter(public_id=self.kwargs.get('public_id'), is_active=True)
     
     def get(self, request, *args, **kwargs):
+        
         instance = get_object_or_404(Post, public_id=self.kwargs.get('public_id'), is_active=True)
         get_queryset = self.get_queryset(request)
         serializer = RetrievePostSerializer(get_queryset[0])
         return JsonResponse(serializer.data, safe=False, status=200)
-        
+                
     def put(self, request, *args, **kwargs):
         
         instance = get_object_or_404(Post, public_id=self.kwargs.get('public_id'), is_active=True)
@@ -67,7 +69,6 @@ class PostRetriveUpdateDestroy(APIView):
 
         if serializer.is_valid():
             serializer.save()
-
             return JsonResponse({'response': 'Post as been updated'}, status=200)
 
         return JsonResponse({
@@ -94,3 +95,58 @@ class PostList(APIView):
         get_queryset = self.get_queryset(request)
         serializer = RetrievePostSerializer(get_queryset, many=True)
         return JsonResponse(serializer.data, safe=False, status=200)
+    
+
+class PostsLike(APIView):
+
+    parser_classes = [FormParser, JSONParser, MultiPartParser]
+
+    def get_permissions(self):
+        
+        self.permission_classes = [IsAuthenticated, ]
+
+        return super(PostsLike, self).get_permissions()
+
+    def get_queryset(self, request):
+        return Post.objects.filter(public_id=self.kwargs.get('public_id'), is_active=True)
+    
+    def post(self, request, *args, **kwargs):
+        
+        instance = get_object_or_404(Post, public_id=self.kwargs.get('public_id'), is_active=True)
+        get_queryset = self.get_queryset(request)
+        serializer = PostsLikeSerializer(get_queryset[0], context={'user': request.user}, data=request.data)
+        
+        if serializer.is_valid():
+            like = serializer.create(serializer.validated_data)
+            like.save()
+            return JsonResponse(serializer.data, safe=False, status=200)
+        
+        return JsonResponse(serializer.errors, safe=False, status=404)
+        
+
+class PostsUnlike(APIView):
+
+    parser_classes = [FormParser, JSONParser, MultiPartParser]
+
+    def get_permissions(self):
+        
+        self.permission_classes = [IsAuthenticated, ]
+
+        return super(PostsUnlike, self).get_permissions()
+
+    def get_queryset(self, request):
+        return Post.objects.filter(public_id=self.kwargs.get('public_id'), is_active=True)
+    
+    def post(self, request, *args, **kwargs):
+        
+        instance = get_object_or_404(Post, public_id=self.kwargs.get('public_id'), is_active=True)
+        get_queryset = self.get_queryset(request)
+        serializer = PostsUnlikeSerializer(get_queryset[0], context={'user': request.user}, data=request.data)
+        
+        if serializer.is_valid():
+            unlike = serializer.create(serializer.validated_data)
+            unlike.save()
+            return JsonResponse(serializer.data, safe=False, status=200)
+        
+        return JsonResponse(serializer.errors, safe=False, status=404)
+        
