@@ -19,6 +19,9 @@ from django.contrib import admin
 from django.urls import path, include
 from user.views import IPOnObtainTokenPair
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('token', IPOnObtainTokenPair.as_view(), name='token_obtain_pair'),
     path('refresh', TokenRefreshView.as_view(), name='token_refresh'),
@@ -26,4 +29,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('user.urls')),
     path('posts/', include('posts.urls')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
