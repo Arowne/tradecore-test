@@ -1,6 +1,6 @@
 # DOCUMENTATION
 
-[docs](https://documenter.getpostman.com/view/5589548/TzJybFCG).
+[Find documentation here](https://documenter.getpostman.com/view/5589548/TzJybFCG).
 
 ## Setup
 
