@@ -64,28 +64,20 @@ class UserSubscriptionSerializer(serializers.Serializer):
 
     def validate_email(self, value):
         
-        try:
-            email = value
-            user_exist = User.objects.filter(username=email, is_active=True).count()
-        except:
-            user_exist = False
+        user = User.objects.filter(email=value, is_active=True).first()
 
-        if user_exist > 0:
+        if user:
             raise ValidationError("An account already uses this email address")
 
         return value
 
-    def validate_password(self, value):
+
+    def validate_confirm_password(self, value):
 
         # Check if password is matching with his confirmation
-        try:
-            password = value
-            confirm_password = self.initial_data['confirm_password']
-        except KeyError:
-            password = True
-            confirm_password = True
+        password = self.initial_data['password']
 
-        if password != confirm_password:
+        if value != password:
             raise ValidationError("Your password confirmation must be the same as your password")
         
         return value
@@ -123,40 +115,23 @@ class UpdateUserSerializer(serializers.Serializer):
 
     def validate_email(self, value):
 
-        try:
-            email = value
-            user = User.objects.get(email=email, is_active=True)
-            user_id = self.user_id
-            current_user = User.objects.get(
-                public_id = user_id,
-                is_active = True
-            )
+        
+        user = User.objects.filter(email=value, is_active=True).first()
+        current_user = User.objects.get(public_id = self.user_id, is_active = True)
 
-            if current_user.id != user.id and user:
-                raise ValidationError("An account already uses this email address")
-        except:
-            print('')
+        if user and current_user.id != user.id:
+            raise ValidationError("An account already uses this email address")
 
         return value
 
 
     def validate_password(self, value):
 
-        try:
-            user_id = self.user_id
-            user = User.objects.get(
-                public_id = user_id,
-                is_active = True
-            )
+        user = User.objects.get(public_id = self.user_id, is_active = True)
+        password_match = check_password(value, user.password)
 
-            password = value
-            password_match = check_password(password, user.password)
-
-            if not password_match:
-                raise ValidationError("Your account password was not recognized")
-
-        except KeyError:
-            print('')
+        if not password_match:
+            raise ValidationError("Your account password was not recognized")
 
         return value
 
@@ -174,21 +149,14 @@ class DeleteUserSerializer(serializers.Serializer):
 
     def validate_password(self, value):
 
-        try:
-            user_id = self.user_id
-            user = User.objects.get(
-                public_id = user_id,
-                is_active = True
-            )
+        user = User.objects.get(public_id=self.user_id, is_active=True)
 
-            password = self.initial_data['password']
-            password_match = check_password(password, user.password)
+        password = self.initial_data['password']
+        password_match = check_password(password, user.password)
 
-            if not password_match:
-                raise ValidationError("Your account password was not recognized")
+        if not password_match:
+            raise ValidationError("Your account password was not recognized")
 
-        except KeyError:
-            print('')
 
         return value
 
