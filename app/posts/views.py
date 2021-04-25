@@ -11,6 +11,7 @@ from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 
 from .serializers import CreatePostSerializer, UpdatePostSerializer, RetrievePostSerializer, DeletePostSerializer, PostsLikeSerializer, PostsUnlikeSerializer
 from user.models import User
+from user.utils import get_object_or_401
 from .models import Post
 
 class PostCreate(APIView):
@@ -41,17 +42,7 @@ class PostRetriveUpdateDestroy(APIView):
 
     parser_classes = [FormParser, JSONParser, MultiPartParser]
 
-    def get_permissions(self):
-        
-        is_admin = ["DELETE", "PUT"]
-        
-        if self.request.method in is_admin:
-            self.permission_classes = [IsAdminUser, ]
-
-        return super(PostRetriveUpdateDestroy, self).get_permissions()
-
     def get_queryset(self, request):
-        
         return Post.objects.filter(public_id=self.kwargs.get('public_id'), is_active=True)
     
     def get(self, request, *args, **kwargs):
@@ -63,7 +54,7 @@ class PostRetriveUpdateDestroy(APIView):
                 
     def put(self, request, *args, **kwargs):
         
-        instance = get_object_or_404(Post, public_id=self.kwargs.get('public_id'), is_active=True)
+        instance = get_object_or_401(Post, public_id=self.kwargs.get('public_id'), user=self.request.user, is_active=True)
         get_queryset = self.get_queryset(request)
         serializer = UpdatePostSerializer(get_queryset, data=request.data)
 
@@ -77,7 +68,7 @@ class PostRetriveUpdateDestroy(APIView):
     
     def delete(self, request, *args, **kwargs):
         
-        instance = get_object_or_404(Post, public_id=self.kwargs.get('public_id'), is_active=True)
+        instance = get_object_or_401(Post, public_id=self.kwargs.get('public_id'), user=self.request.user, is_active=True)
         instance.is_active = False
         instance.save()
         

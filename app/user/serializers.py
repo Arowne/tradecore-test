@@ -50,11 +50,6 @@ class UserSubscriptionSerializer(serializers.Serializer):
         'max_length': "Your email cannot exceed 200 characters"
     })
         
-    token = serializers.CharField(max_length=200, error_messages={
-        'required': "Please enter a notification token",
-        'max_length': "Your token cannot exceed 200 characters"
-    })
-
     password = serializers.CharField(max_length=200, validators=[RegexValidator(r'^(?=.*\d).{8,}$', "Your password must contain at least eight characters, one number and one letter.")], error_messages={
         'required': "Please enter your password",
         'max_length': "Your password cannot exceed 200 characters."
@@ -109,11 +104,6 @@ class UpdateUserSerializer(serializers.Serializer):
     last_name = serializers.CharField(max_length=200, validators=[RegexValidator(r'^[a-zA-Z\'\- ]+$', "Please enter a valid first name. It can only contain the following characters: -\and a space.")],error_messages={
         'required': "Please enter your name",
         'max_length': "Your name cannot exceed 200 characters"
-    })
-    
-    token = serializers.CharField(max_length=200, error_messages={
-        'required': "Please enter a notification token",
-        'max_length': "Your token cannot exceed 200 characters"
     })
 
     pseudo = serializers.CharField(max_length=20,error_messages={

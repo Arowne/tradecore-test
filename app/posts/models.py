@@ -13,7 +13,7 @@ class Post(models.Model):
     
     public_id = models.UUIDField(default=uuid.uuid4, editable=False, blank=False)
     title = models.CharField(max_length=200, blank=False, null=False)
-    image_url = models.CharField(max_length=200, blank=False, null=False)
+    image = models.ImageField(upload_to='media/')
     content = models.CharField(max_length=10000, blank=False, null=False)
     
     # State
@@ -50,7 +50,7 @@ class PostAdmin(admin.ModelAdmin):
         "id",
         "public_id",
         "title",
-        "image_url",
+        "image",
         "content",
         "views",
         "created_at",

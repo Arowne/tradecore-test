@@ -44,7 +44,6 @@ class UserCreateRetriveUpdateDestroy(APIView):
             user = User.objects.create_user(
                 first_name=data.get("first_name"),
                 last_name=data.get("last_name"),
-                token=data.get("token"),
                 email=data.get("email"),
                 username=data.get("email"),
                 password=data.get("password"),
@@ -80,7 +79,6 @@ class UserCreateRetriveUpdateDestroy(APIView):
             user.email = data.get("email")
             user.username = data.get("email")
             user.pseudo = data.get("pseudo")
-            user.token = data.get("token")
             user.updated_at = datetime.datetime.now()
             user.save()
 

@@ -15,8 +15,7 @@ class AccountTests(APITestCase):
             first_name="Firstname",
             email="exemple@exemple.com",
             username="exemple@exemple.com",
-            password='password1234',
-            token='foo'
+            password='password1234'
         )
 
     def test_valid_login_value(self):
@@ -58,7 +57,6 @@ class AccountTests(APITestCase):
                 'username': "test@exemple.com",
                 'password': "password1234",
                 'confirm_password': "password1234",
-                'token': "foo"
             }
         response = self.client.post(url, data, format='json')
         
@@ -75,7 +73,6 @@ class AccountTests(APITestCase):
                 'email': "exemple@exemple.com",
                 'password': "password123",
                 'confirm_password': "",
-                'token': ""
             }
         
         response = self.client.post(url, data, format='json')
@@ -87,7 +84,6 @@ class AccountTests(APITestCase):
         self.assertTrue(True, data['errors']['email'])
         self.assertTrue(True, data['errors']['password'])
         self.assertTrue(True, data['errors']['confirm_password'])
-        self.assertTrue(True, data['errors']['token'])
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
     
     def test_create_missing_value(self):
@@ -99,7 +95,6 @@ class AccountTests(APITestCase):
                 'email': "",
                 'password': "",
                 'confirm_password': "",
-                'token': ""
             }
         
         response = self.client.post(url, data, format='json')
@@ -111,7 +106,6 @@ class AccountTests(APITestCase):
         self.assertTrue(True, data['errors']['email'])
         self.assertTrue(True, data['errors']['password'])
         self.assertTrue(True, data['errors']['confirm_password'])
-        self.assertTrue(True, data['errors']['token'])
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         
     def test_read_valid_value(self):
@@ -159,7 +153,6 @@ class AccountTests(APITestCase):
                 'pseudo': 'pseudo',
                 'email': "test@exemple.com",
                 'password': "password1234",
-                'token': "foo"
             }
         
         response = self.client.put(url, data, format='json')
@@ -183,7 +176,6 @@ class AccountTests(APITestCase):
                 'pseudo': '',
                 'email': "",
                 'password': "",
-                'token': ""
             }
         
         response = self.client.put(url, data, format='json')
@@ -194,7 +186,6 @@ class AccountTests(APITestCase):
         self.assertTrue(True, data['errors']['pseudo'])
         self.assertTrue(True, data['errors']['email'])
         self.assertTrue(True, data['errors']['password'])
-        self.assertTrue(True, data['errors']['token'])
         
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -214,7 +205,6 @@ class AccountTests(APITestCase):
                 'pseudo': "",
                 'email': "email",
                 'password': "ksjksjd",
-                'token': ""
             }
         
         response = self.client.put(url, data, format='json')
@@ -225,7 +215,6 @@ class AccountTests(APITestCase):
         self.assertTrue(True, data['errors']['pseudo'])
         self.assertTrue(True, data['errors']['email'])
         self.assertTrue(True, data['errors']['password'])
-        self.assertTrue(True, data['errors']['token'])
         
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
            

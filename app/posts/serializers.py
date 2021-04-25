@@ -15,7 +15,7 @@ class ListUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email']
+        fields = ['email', 'first_name', 'last_name']
 
 class CreatePostSerializer(serializers.ModelSerializer):
 
@@ -25,9 +25,11 @@ class CreatePostSerializer(serializers.ModelSerializer):
         post = Post.objects.create(user=user, **validated_data)
         return post
 
+    image = serializers.ImageField()
+    
     class Meta:
         model = Post
-        fields = ["title", "image_url", "content"]
+        fields = ["title", "image", "content"]
 
 
 class UpdatePostSerializer(serializers.ModelSerializer):
@@ -36,10 +38,12 @@ class UpdatePostSerializer(serializers.ModelSerializer):
         validated_data["is_active"] = True
         post = instance.update(**validated_data)
         return post
-
+    
+    image = serializers.ImageField()
+    
     class Meta:
         model = Post
-        fields = ["title", "image_url", "content"]
+        fields = ["title", "image", "content"]
 
 
 class DeletePostSerializer(serializers.ModelSerializer):
@@ -79,7 +83,7 @@ class RetrievePostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ["public_id", "title", "image_url", "content", "user", "like", "unlike", "user_like", "user_unlike"]
+        fields = ["public_id", "title", "image", "content", "user", "like", "unlike", "user_like", "user_unlike"]
 
     
 class RetrieveAllPostSerializer(serializers.ModelSerializer):
@@ -88,7 +92,7 @@ class RetrieveAllPostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ["public_id", "title", "image_url", "content", "user"]
+        fields = ["public_id", "title", "image", "content", "user"]
 
 
 class PostsLikeSerializer(serializers.ModelSerializer):

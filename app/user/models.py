@@ -10,7 +10,6 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=30, default=None,blank=True, null=True)
     last_name = models.CharField(max_length=30, default=None,blank=True, null=True)
     pseudo = models.CharField(max_length=30, default=None,blank=True, null=True)
-    token = models.CharField(max_length=30, default=None, blank=True, null=True)
     email = models.EmailField(max_length=500, default=None,blank=True, null=True)
     password = models.CharField(max_length=500, blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True, blank=False, null=True)
