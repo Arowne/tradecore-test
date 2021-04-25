@@ -4,6 +4,7 @@ import uuid
 from django.shortcuts import render
 from django.http import JsonResponse
 
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import permission_classes, api_view
@@ -51,7 +52,7 @@ class UserCreateRetriveUpdateDestroy(APIView):
 
             user.save()
 
-            return JsonResponse({'response': 'User as been registered'}, status=201)
+            return JsonResponse({'response': 'User as been registered'}, status=status.HTTP_201_CREATED)
 
         return JsonResponse({
             'errors': serializer.errors,
@@ -62,7 +63,7 @@ class UserCreateRetriveUpdateDestroy(APIView):
         user_id = request.user.public_id
         user = User.objects.filter(public_id=user_id).values()
         
-        return JsonResponse(list(user), safe=False, status=200)
+        return JsonResponse(list(user), safe=False, status=status.HTTP_200_OK)
     
     def put(self, request, *args, **kwargs):
         
@@ -82,11 +83,11 @@ class UserCreateRetriveUpdateDestroy(APIView):
             user.updated_at = datetime.datetime.now()
             user.save()
 
-            return JsonResponse({'response': 'User updated'}, status=200)
+            return JsonResponse({'response': 'User updated'}, status=status.HTTP_200_OK)
 
         return JsonResponse({
             'errors': serializer.errors
-        }, status=404)
+        }, status=status.HTTP_404_NOT_FOUND)
 
     def delete(self, request, *args, **kwargs):
 
@@ -104,7 +105,7 @@ class UserCreateRetriveUpdateDestroy(APIView):
 
         return JsonResponse({
             'errors': serializer.errors
-        }, status=400)
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 class UserList(APIView):
 
@@ -121,4 +122,4 @@ class UserList(APIView):
     def get(self, request, *args, **kwargs):
         get_queryset = self.get_queryset(request)
         serializer = ListUserSerializer(get_queryset, many=True)
-        return JsonResponse(serializer.data, safe=False, status=200)
+        return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)

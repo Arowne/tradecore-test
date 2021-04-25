@@ -4,6 +4,7 @@ import uuid
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.http import JsonResponse
 
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import permission_classes, api_view
@@ -21,7 +22,6 @@ class PostCreate(APIView):
     def get_permissions(self):
 
         self.permission_classes = [IsAuthenticated, ]
-
         return super(PostCreate, self).get_permissions()
 
 
@@ -32,11 +32,11 @@ class PostCreate(APIView):
         if serializer.is_valid():
             serializer.save()
 
-            return JsonResponse({'response': 'Post as been registered'}, status=201)
+            return JsonResponse({'response': 'Post as been registered'}, status=status.HTTP_201_CREATED)
 
         return JsonResponse({
             'errors': serializer.errors,
-        }, status=404)
+        }, status=status.HTTP_404_NOT_FOUND)
         
 class PostRetriveUpdateDestroy(APIView):
 
@@ -50,7 +50,7 @@ class PostRetriveUpdateDestroy(APIView):
         instance = get_object_or_404(Post, public_id=self.kwargs.get('public_id'), is_active=True)
         get_queryset = self.get_queryset(request)
         serializer = RetrievePostSerializer(get_queryset[0], context={'user': request.user})
-        return JsonResponse(serializer.data, safe=False, status=200)
+        return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
                 
     def put(self, request, *args, **kwargs):
         
@@ -60,11 +60,11 @@ class PostRetriveUpdateDestroy(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse({'response': 'Post as been updated'}, status=200)
+            return JsonResponse({'response': 'Post as been updated'}, status=status.HTTP_200_OK)
 
         return JsonResponse({
             'errors': serializer.errors,
-        }, status=404)
+        }, status=status.HTTP_404_NOT_FOUND)
     
     def delete(self, request, *args, **kwargs):
         
@@ -72,12 +72,11 @@ class PostRetriveUpdateDestroy(APIView):
         instance.is_active = False
         instance.save()
         
-        return JsonResponse({'response': 'Post as been deleted'}, status=200)
+        return JsonResponse({'response': 'Post as been deleted'}, status=status.HTTP_200_OK)
 
 class PostList(APIView):
 
     parser_classes = [FormParser, JSONParser, MultiPartParser]
-
 
     def get_queryset(self, request):
         return Post.objects.filter(is_active=True)
@@ -85,7 +84,7 @@ class PostList(APIView):
     def get(self, request, *args, **kwargs):
         get_queryset = self.get_queryset(request)
         serializer = RetrievePostSerializer(get_queryset, context={'user': request.user}, many=True)
-        return JsonResponse(serializer.data, safe=False, status=200)
+        return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
     
 
 class PostsLike(APIView):
@@ -95,7 +94,6 @@ class PostsLike(APIView):
     def get_permissions(self):
         
         self.permission_classes = [IsAuthenticated, ]
-
         return super(PostsLike, self).get_permissions()
 
     def get_queryset(self, request):
@@ -110,9 +108,9 @@ class PostsLike(APIView):
         if serializer.is_valid():
             like = serializer.create(serializer.validated_data)
             like.save()
-            return JsonResponse({"response": "Like registered"}, safe=False, status=200)
+            return JsonResponse({"response": "Like registered"}, safe=False, status=status.HTTP_200_OK)
         
-        return JsonResponse(serializer.errors, safe=False, status=404)
+        return JsonResponse(serializer.errors, safe=False, status=status.HTTP_404_NOT_FOUND)
         
 
 class PostsUnlike(APIView):
@@ -122,7 +120,6 @@ class PostsUnlike(APIView):
     def get_permissions(self):
         
         self.permission_classes = [IsAuthenticated, ]
-
         return super(PostsUnlike, self).get_permissions()
 
     def get_queryset(self, request):
@@ -137,7 +134,7 @@ class PostsUnlike(APIView):
         if serializer.is_valid():
             unlike = serializer.create(serializer.validated_data)
             unlike.save()
-            return JsonResponse({"response": "Unlike registered"}, safe=False, status=200)
+            return JsonResponse({"response": "Unlike registered"}, safe=False, status=status.HTTP_200_OK)
         
-        return JsonResponse(serializer.errors, safe=False, status=404)
+        return JsonResponse(serializer.errors, safe=False, status=status.HTTP_404_NOT_FOUND)
         
