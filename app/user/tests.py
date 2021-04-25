@@ -71,7 +71,7 @@ class AccountTests(APITestCase):
                 'last_name': "1Lastname",
                 'first_name': "1Firstname",
                 'email': "exemple@exemple.com",
-                'password': "password123",
+                'password': "password",
                 'confirm_password': "",
             }
         
