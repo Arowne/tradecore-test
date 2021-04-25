@@ -58,6 +58,8 @@ class RetrievePostSerializer(serializers.ModelSerializer):
     user = ListUserSerializer(many=False)
     like =  serializers.SerializerMethodField(read_only=True)
     unlike = serializers.SerializerMethodField(read_only=True)
+    
+    # Get if user like or unlike the post (bool) return false if anonym
     user_unlike = serializers.SerializerMethodField(read_only=True)
     user_like = serializers.SerializerMethodField(read_only=True)
 
@@ -103,6 +105,7 @@ class PostsLikeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         
+        # Check if unlike then delete it and add like or just delete like
         unlike = UnLike.objects.filter(post=self.instance, user=self.context['user'], is_active=True).first()
         like = Like.objects.filter(post=self.instance, user=self.context['user'], is_active=True).first()
         
@@ -125,6 +128,8 @@ class PostsUnlikeSerializer(serializers.ModelSerializer):
         fields = ["public_id"]
         
     def create(self, validated_data):
+        
+        # Check if like then delete it and add unlike or just delete unlike
         unlike = UnLike.objects.filter(post=self.instance, user=self.context['user'], is_active=True).first()
         like = Like.objects.filter(post=self.instance, user=self.context['user'], is_active=True).first()
         
