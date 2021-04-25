@@ -115,7 +115,6 @@ class UpdateUserSerializer(serializers.Serializer):
 
     def validate_email(self, value):
 
-        
         user = User.objects.filter(email=value, is_active=True).first()
         current_user = User.objects.get(public_id = self.user_id, is_active = True)
 
